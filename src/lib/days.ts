@@ -15,23 +15,25 @@ export interface DayContent {
   slug: string
 }
 
-const DAYS_DIR = path.join(process.cwd(), 'days')
-const CONTENT_DIR = path.join(DAYS_DIR, 'content')
+// Always resolve the path to the /days/ directory from the project root
+// Using absolute path to ensure consistency across different environments
+const DAYS_DIR = path.resolve(process.cwd(), 'days')
+console.log(`Days directory path: ${DAYS_DIR}`)
 
 export async function getAllDays(): Promise<DayContent[]> {
   try {
-    if (!fs.existsSync(CONTENT_DIR)) {
+    if (!fs.existsSync(DAYS_DIR)) {
       return []
     }
     
-    // Get all markdown files from the content directory
-    const fileNames = fs.readdirSync(CONTENT_DIR)
+    // Get all markdown files from the days directory
+    const fileNames = fs.readdirSync(DAYS_DIR)
     
     const allDays = fileNames
       .filter(filename => filename.endsWith('.md'))
       .map(filename => {
         // Get the file path
-        const filePath = path.join(CONTENT_DIR, filename)
+        const filePath = path.join(DAYS_DIR, filename)
         
         // Remove extension to get date (slug)
         const slug = filename.replace(/\.md$/, '')
@@ -69,7 +71,7 @@ export async function getAllDays(): Promise<DayContent[]> {
 
 export async function getDayBySlug(slug: string): Promise<DayContent | null> {
   try {
-    const filePath = path.join(CONTENT_DIR, `${slug}.md`)
+    const filePath = path.join(DAYS_DIR, `${slug}.md`)
     
     if (!fs.existsSync(filePath)) {
       return null
@@ -121,11 +123,15 @@ export async function getAllVisibleDays(): Promise<DayContent[]> {
 
 export async function saveDayContent(day: DayContent): Promise<boolean> {
   try {
-    const filePath = path.join(CONTENT_DIR, `${day.slug}.md`)
+    // Create the absolute path to the file
+    const filePath = path.join(DAYS_DIR, `${day.slug}.md`)
     
-    // Create the content directory if it doesn't exist
-    if (!fs.existsSync(CONTENT_DIR)) {
-      fs.mkdirSync(CONTENT_DIR, { recursive: true })
+    console.log(`Saving day content to: ${filePath}`)
+    
+    // Create the days directory if it doesn't exist
+    if (!fs.existsSync(DAYS_DIR)) {
+      console.log(`Creating days directory at: ${DAYS_DIR}`)
+      fs.mkdirSync(DAYS_DIR, { recursive: true })
     }
     
     // Create frontmatter
@@ -142,10 +148,19 @@ export async function saveDayContent(day: DayContent): Promise<boolean> {
     const fileContent = matter.stringify(day.content, frontmatter)
     
     // Write to file
-    fs.writeFileSync(filePath, fileContent)
-    return true
+    fs.writeFileSync(filePath, fileContent, { encoding: 'utf8' })
+    
+    // Verify the file was created
+    if (fs.existsSync(filePath)) {
+      console.log(`Successfully saved day content to ${filePath}`)
+      return true
+    } else {
+      console.error(`Failed to verify file creation at ${filePath}`)
+      return false
+    }
   } catch (error) {
     console.error(`Error saving day content for ${day.slug}:`, error)
+    console.error(error)
     return false
   }
 }

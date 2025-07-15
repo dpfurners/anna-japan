@@ -32,10 +32,15 @@ export default function NewMessage() {
     }
   }, [status, session, router]);
 
-  // Set today's date as default
+  // Set date from URL parameter or today's date as default
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    setFormData((prev) => ({ ...prev, date: today }));
+    // Check if we have a date parameter in the URL
+    const params = new URLSearchParams(window.location.search);
+    const dateParam = params.get("date");
+
+    // Use the date from URL parameter if available, otherwise use today's date
+    const dateToUse = dateParam || new Date().toISOString().split("T")[0];
+    setFormData((prev) => ({ ...prev, date: dateToUse }));
   }, []);
 
   const handleChange = (
