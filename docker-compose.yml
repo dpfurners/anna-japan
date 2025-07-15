@@ -21,12 +21,4 @@ services:
       - "3000:3000"
     restart: unless-stopped
     volumes:
-      - content_data:/app/days
-
-volumes:
-  content_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./days
+      - ./days:/app/days

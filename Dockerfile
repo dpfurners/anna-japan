@@ -43,15 +43,21 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Create content directory
-RUN mkdir -p /app/days/content
-RUN chown nextjs:nodejs /app/days
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-USER nextjs
+# Create content directory and set proper permissions
+RUN mkdir -p /app/days
+RUN chown nextjs:nodejs /app/days
+RUN chmod 777 /app/days
+
+USER root
 
 EXPOSE 3000
 
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["node", "server.js"]
