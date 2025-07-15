@@ -54,9 +54,9 @@ RUN chmod 777 /app/days
 
 USER root
 
-EXPOSE 3000
+EXPOSE 3008
 
-ENV PORT 3000
+ENV PORT 3008
 ENV HOSTNAME "0.0.0.0"
 
 ENTRYPOINT ["/entrypoint.sh"]

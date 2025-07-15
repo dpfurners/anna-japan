@@ -18,7 +18,7 @@ services:
       NEXT_PUBLIC_TRIP_START_DATE: "2025-07-24"
       NEXT_PUBLIC_TRIP_END_DATE: "2025-10-24"
     ports:
-      - "3000:3000"
+      - "3008:3008"
     restart: unless-stopped
     volumes:
       - ./days:/app/days
