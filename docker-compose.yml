@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: anna-japan-app
+    environment:
+      NODE_ENV: production
+      AUTH_ANNA_USERNAME: anna
+      AUTH_ANNA_PASSWORD: iloveyou
+      AUTH_DANIEL_USERNAME: daniel
+      AUTH_DANIEL_PASSWORD: secretpassword
+      NEXTAUTH_SECRET: oursecretlovedanielanna
+      NEXTAUTH_URL: https://your-production-domain.com
+      NEXT_PUBLIC_TRIP_START_DATE: "2025-07-24"
+      NEXT_PUBLIC_TRIP_END_DATE: "2025-10-24"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - content_data:/app/days
+
+volumes:
+  content_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./days
