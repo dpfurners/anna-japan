@@ -10,11 +10,11 @@ services:
     environment:
       NODE_ENV: production
       AUTH_ANNA_USERNAME: anna
-      AUTH_ANNA_PASSWORD: iloveyoubabe
+      AUTH_ANNA_PASSWORD: iloveyou
       AUTH_DANIEL_USERNAME: daniel
-      AUTH_DANIEL_PASSWORD: da4236$%4$%6$%5
+      AUTH_DANIEL_PASSWORD: secretpassword
       NEXTAUTH_SECRET: oursecretlovedanielanna
-      NEXTAUTH_URL: https://my-love.dpfurner.xyz
+      NEXTAUTH_URL: https://your-production-domain.com
       NEXT_PUBLIC_TRIP_START_DATE: "2025-07-24"
       NEXT_PUBLIC_TRIP_END_DATE: "2025-10-24"
     ports:
