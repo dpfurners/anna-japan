@@ -18,7 +18,7 @@ export async function GET(
       )
     }
     
-    const slug = await Promise.resolve(params.slug)
+    const slug = params.slug
     const day = await getDayBySlug(slug)
     
     if (!day) {

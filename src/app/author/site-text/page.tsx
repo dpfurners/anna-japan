@@ -10,6 +10,11 @@ interface SiteTextFormData {
   siteTitle: string;
   siteSubtitle: string;
   siteThought: string;
+  metadata: {
+    title: string;
+    description: string;
+    keywords: string;
+  };
   counterTitle: {
     before: string;
     during: string;
@@ -37,9 +42,21 @@ interface SiteTextFormData {
   };
   dashboard: {
     title: string;
+    subtitle: string;
     newButton: string;
     settingsButton: string;
     siteTextButton: string;
+    messageListTitle: string;
+    dateColumn: string;
+    titleColumn: string;
+    statusColumn: string;
+    actionsColumn: string;
+    publishedStatus: string;
+    draftStatus: string;
+    noMessages: string;
+    editButton: string;
+    publishButton: string;
+    unpublishButton: string;
   };
 }
 
@@ -50,6 +67,11 @@ export default function SiteTextSettings() {
     siteTitle: "",
     siteSubtitle: "",
     siteThought: "",
+    metadata: {
+      title: "",
+      description: "",
+      keywords: "",
+    },
     counterTitle: {
       before: "",
       during: "",
@@ -77,9 +99,21 @@ export default function SiteTextSettings() {
     },
     dashboard: {
       title: "",
+      subtitle: "",
       newButton: "",
       settingsButton: "",
       siteTextButton: "",
+      messageListTitle: "",
+      dateColumn: "",
+      titleColumn: "",
+      statusColumn: "",
+      actionsColumn: "",
+      publishedStatus: "",
+      draftStatus: "",
+      noMessages: "",
+      editButton: "",
+      publishButton: "",
+      unpublishButton: "",
     },
   });
   const [loading, setLoading] = useState(true);
@@ -257,6 +291,69 @@ export default function SiteTextSettings() {
                       onChange={handleChange}
                       className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
                     />
+                  </div>
+                </div>
+              </div>
+
+              {/* Metadata */}
+              <div>
+                <h2 className="text-xl text-pink-300 mb-4 pb-2 border-b border-pink-500/20">
+                  Site Metadata (SEO)
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      HTML Page Title
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.metadata.title}
+                      onChange={(e) =>
+                        handleNestedChange("metadata", "title", e.target.value)
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                    <p className="text-xs text-pink-300/70 mt-1">
+                      Der Titel, der im Browser-Tab angezeigt wird
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Meta Description
+                    </label>
+                    <textarea
+                      value={formData.metadata.description}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "metadata",
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                      rows={2}
+                    />
+                    <p className="text-xs text-pink-300/70 mt-1">
+                      Kurze Beschreibung für Suchmaschinen
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">Keywords</label>
+                    <input
+                      type="text"
+                      value={formData.metadata.keywords}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "metadata",
+                          "keywords",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                    <p className="text-xs text-pink-300/70 mt-1">
+                      Mit Kommas getrennte Schlüsselwörter
+                    </p>
                   </div>
                 </div>
               </div>
@@ -527,7 +624,10 @@ export default function SiteTextSettings() {
                 <h2 className="text-xl text-pink-300 mb-4 pb-2 border-b border-pink-500/20">
                   Dashboard Text
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                {/* Dashboard Basic */}
+                <h3 className="text-md text-pink-300 mb-3">Basic Elements</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-pink-300 mb-2">
                       Dashboard Title
@@ -537,6 +637,23 @@ export default function SiteTextSettings() {
                       value={formData.dashboard.title}
                       onChange={(e) =>
                         handleNestedChange("dashboard", "title", e.target.value)
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Dashboard Subtitle
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.subtitle}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "subtitle",
+                          e.target.value
+                        )
                       }
                       className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
                     />
@@ -586,6 +703,210 @@ export default function SiteTextSettings() {
                         handleNestedChange(
                           "dashboard",
                           "siteTextButton",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                </div>
+
+                {/* Message List */}
+                <h3 className="text-md text-pink-300 mb-3">Message List</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Message List Title
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.messageListTitle}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "messageListTitle",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      No Messages Text
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.noMessages}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "noMessages",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                </div>
+
+                {/* Table Headers */}
+                <h3 className="text-md text-pink-300 mb-3">Table Headers</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Date Column
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.dateColumn}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "dateColumn",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Title Column
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.titleColumn}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "titleColumn",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Status Column
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.statusColumn}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "statusColumn",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Actions Column
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.actionsColumn}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "actionsColumn",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                </div>
+
+                {/* Status and Action Labels */}
+                <h3 className="text-md text-pink-300 mb-3">
+                  Status and Actions
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Published Status
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.publishedStatus}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "publishedStatus",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Draft Status
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.draftStatus}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "draftStatus",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Edit Button
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.editButton}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "editButton",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Publish Button
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.publishButton}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "publishButton",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-pink-300 mb-2">
+                      Unpublish Button
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.dashboard.unpublishButton}
+                      onChange={(e) =>
+                        handleNestedChange(
+                          "dashboard",
+                          "unpublishButton",
                           e.target.value
                         )
                       }

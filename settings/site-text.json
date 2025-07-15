@@ -2,11 +2,6 @@
   "siteTitle": "Ich Liebe Dich 💕",
   "siteSubtitle": "Meine Reise nach Japan • 29 Juli bis 24 Oktober, 2025",
   "siteThought": "In jedem Moment, bist du in Gedanken bei mir ✨",
-  "metadata": {
-    "title": "Love You Anna 💕",
-    "description": "Eine persönliche Webseite von Daniel für Anna während seiner Reise nach Japan",
-    "keywords": "Liebe, Japan, Reise, Fernbeziehung, Daniel, Anna"
-  },
   "counterTitle": {
     "before": "Meine Reise nach Japan 🇯🇵",
     "during": "Ich bin wieder da in: ✈️",
@@ -15,7 +10,7 @@
   "counterMessage": {
     "before": "Meine Reise hat noch nicht angefangen! Bleib neugierig...",
     "during": "Ich vermisse dich in jedem Moment wo ich nicht bei dir bin 💕",
-    "after": "🎉 Daniel is finally home with you! 🎉"
+    "after": "🎉 Ich bin endlich wieder bei dir! 🎉"
   },
   "timeline": {
     "empty": "Ich habe noch keine Nachrichten verfasst...",
@@ -34,13 +29,13 @@
   },
   "dashboard": {
     "title": "Daniel's Dashboard",
-    "subtitle": "Manage your messages for Anna here",
     "newButton": "New Message",
     "settingsButton": "Trip Settings",
     "siteTextButton": "Site Text",
+    "subtitle": "Manage your messages for Anna here",
     "messageListTitle": "Message List",
     "dateColumn": "Date",
-    "titleColumn": "Title", 
+    "titleColumn": "Title",
     "statusColumn": "Status",
     "actionsColumn": "Actions",
     "publishedStatus": "Published",
@@ -49,5 +44,10 @@
     "editButton": "Edit",
     "publishButton": "Publish",
     "unpublishButton": "Unpublish"
+  },
+  "metadata": {
+    "title": "Love You Anna 💕",
+    "description": "Eine persönliche Webseite von Daniel für Anna während seiner Reise nach Japan",
+    "keywords": "Liebe, Japan, Reise, Fernbeziehung, Daniel, Anna"
   }
 }

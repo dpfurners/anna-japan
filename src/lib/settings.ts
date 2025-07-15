@@ -220,7 +220,8 @@ export async function saveSiteTextSettings(settings: Partial<SiteTextSettings>):
 /**
  * Helper function to deep merge objects
  */
-function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>): T {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function deepMerge<T extends object>(target: T, source: Partial<T>): T {
   const output = { ...target } as T
   
   if (isObject(target) && isObject(source)) {
@@ -231,10 +232,8 @@ function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>)
         if (!(key in target)) {
           output[key as keyof T] = sourceValue as T[keyof T]
         } else {
-          output[key as keyof T] = deepMerge(
-            target[key as keyof T],
-            sourceValue as any
-          )
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          output[key as keyof T] = deepMerge(target[key as keyof T] as any, sourceValue as any) as any
         }
       } else {
         output[key as keyof T] = sourceValue as T[keyof T]
@@ -248,6 +247,7 @@ function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>)
 /**
  * Helper function to check if value is an object
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isObject(item: any): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item)
+  return item !== null && typeof item === 'object' && !Array.isArray(item)
 }
