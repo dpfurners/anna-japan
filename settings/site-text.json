@@ -1,0 +1,53 @@
+{
+  "siteTitle": "Ich Liebe Dich 💕",
+  "siteSubtitle": "Meine Reise nach Japan • 29 Juli bis 24 Oktober, 2025",
+  "siteThought": "In jedem Moment, bist du in Gedanken bei mir ✨",
+  "metadata": {
+    "title": "Love You Anna 💕",
+    "description": "Eine persönliche Webseite von Daniel für Anna während seiner Reise nach Japan",
+    "keywords": "Liebe, Japan, Reise, Fernbeziehung, Daniel, Anna"
+  },
+  "counterTitle": {
+    "before": "Meine Reise nach Japan 🇯🇵",
+    "during": "Ich bin wieder da in: ✈️",
+    "after": "Ich bin wieder da! 🎉"
+  },
+  "counterMessage": {
+    "before": "Meine Reise hat noch nicht angefangen! Bleib neugierig...",
+    "during": "Ich vermisse dich in jedem Moment wo ich nicht bei dir bin 💕",
+    "after": "🎉 Daniel is finally home with you! 🎉"
+  },
+  "timeline": {
+    "empty": "Ich habe noch keine Nachrichten verfasst...",
+    "emptySubtext": "Schau vorbei für Updates! 💕",
+    "upcoming": "Weitere Nachrichten kommen in den nächsten Tagen... 🌸",
+    "upcomingSubtext": "Schatz, du bist immer in meinem Herzen ✨"
+  },
+  "login": {
+    "title": "Für Anna 💕",
+    "subtitle": "Melde dich an um meine Nachrichten zu sehen",
+    "footer": "Nur du hast Zugriff meine Nachrichten zu sehen 💕",
+    "usernamePlaceholder": "Benutzername",
+    "passwordPlaceholder": "Passwort",
+    "button": "Anmelden",
+    "buttonLoading": "Anmelden..."
+  },
+  "dashboard": {
+    "title": "Daniel's Dashboard",
+    "subtitle": "Manage your messages for Anna here",
+    "newButton": "New Message",
+    "settingsButton": "Trip Settings",
+    "siteTextButton": "Site Text",
+    "messageListTitle": "Message List",
+    "dateColumn": "Date",
+    "titleColumn": "Title", 
+    "statusColumn": "Status",
+    "actionsColumn": "Actions",
+    "publishedStatus": "Published",
+    "draftStatus": "Draft",
+    "noMessages": "No messages yet. Create your first one!",
+    "editButton": "Edit",
+    "publishButton": "Publish",
+    "unpublishButton": "Unpublish"
+  }
+}

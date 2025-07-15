@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FloatingHearts } from "@/components/FloatingHearts";
@@ -10,7 +10,35 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loginText, setLoginText] = useState({
+    title: "For Anna 💕",
+    subtitle: "Login to see Daniel's messages",
+    footer: "Only Anna has access to these messages 💕",
+    usernamePlaceholder: "Username",
+    passwordPlaceholder: "Password",
+    button: "Login",
+    buttonLoading: "Logging in...",
+  });
   const router = useRouter();
+
+  // Fetch site text settings
+  useEffect(() => {
+    const fetchSiteText = async () => {
+      try {
+        const response = await fetch("/api/site-text-settings");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.login) {
+            setLoginText(data.login);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load login text settings");
+      }
+    };
+
+    fetchSiteText();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,9 +71,9 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-md bg-black/60 backdrop-blur-lg rounded-xl p-8 shadow-xl border border-pink-500/30">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-pink-300 romantic-glow mb-2">
-            For Anna 💕
+            {loginText.title}
           </h1>
-          <p className="text-pink-200">Login to see Daniel's messages</p>
+          <p className="text-pink-200">{loginText.subtitle}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -60,7 +88,7 @@ export default function Login() {
               htmlFor="username"
               className="block text-pink-300 mb-2 text-sm"
             >
-              Username
+              {loginText.usernamePlaceholder}
             </label>
             <input
               id="username"
@@ -77,7 +105,7 @@ export default function Login() {
               htmlFor="password"
               className="block text-pink-300 mb-2 text-sm"
             >
-              Password
+              {loginText.passwordPlaceholder}
             </label>
             <input
               id="password"
@@ -96,14 +124,12 @@ export default function Login() {
               loading ? "opacity-70 cursor-not-allowed" : ""
             }`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? loginText.buttonLoading : loginText.button}
           </button>
         </form>
 
         <div className="mt-8 text-center">
-          <p className="text-pink-300/70 text-sm">
-            Only Anna has access to these messages 💕
-          </p>
+          <p className="text-pink-300/70 text-sm">{loginText.footer}</p>
         </div>
       </div>
     </div>

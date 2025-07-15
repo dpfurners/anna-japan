@@ -26,6 +26,24 @@ export default function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dashboardText, setDashboardText] = useState({
+    title: "Daniel's Dashboard",
+    subtitle: "Manage your messages for Anna here",
+    newButton: "New Message",
+    settingsButton: "Trip Settings",
+    siteTextButton: "Site Text",
+    messageListTitle: "Message List",
+    dateColumn: "Date",
+    titleColumn: "Title",
+    statusColumn: "Status",
+    actionsColumn: "Actions",
+    publishedStatus: "Published",
+    draftStatus: "Draft",
+    noMessages: "No messages yet. Create your first one!",
+    editButton: "Edit",
+    publishButton: "Publish",
+    unpublishButton: "Unpublish",
+  });
 
   useEffect(() => {
     // Redirect if not logged in as author
@@ -52,6 +70,15 @@ export default function Dashboard() {
         if (settingsResponse.ok) {
           const settingsData = await settingsResponse.json();
           setTripSettings(settingsData);
+        }
+
+        // Fetch site text settings
+        const textResponse = await fetch("/api/site-text-settings");
+        if (textResponse.ok) {
+          const textData = await textResponse.json();
+          if (textData.dashboard) {
+            setDashboardText(textData.dashboard);
+          }
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -82,7 +109,7 @@ export default function Dashboard() {
           <header className="mb-12">
             <div className="flex justify-between items-center">
               <h1 className="text-2xl md:text-4xl font-bold text-pink-300 drop-shadow-lg">
-                Daniel's Dashboard
+                {dashboardText.title}
               </h1>
 
               <div className="flex space-x-4">
@@ -90,31 +117,37 @@ export default function Dashboard() {
                   href="/author/new"
                   className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all shadow-lg"
                 >
-                  New Message
+                  {dashboardText.newButton}
                 </Link>
                 <Link
                   href="/author/settings"
                   className="px-4 py-2 bg-gradient-to-r from-pink-600 to-orange-500 text-white rounded-lg hover:from-pink-700 hover:to-orange-600 transition-all shadow-lg"
                 >
-                  Trip Settings
+                  {dashboardText.settingsButton}
+                </Link>
+                <Link
+                  href="/author/site-text"
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-teal-500 text-white rounded-lg hover:from-blue-700 hover:to-teal-600 transition-all shadow-lg"
+                >
+                  {dashboardText.siteTextButton}
                 </Link>
                 <Link
                   href="/"
                   className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-lg hover:from-purple-600 hover:to-blue-700 transition-all shadow-lg"
                 >
-                  View Main Page
+                  {dashboardText.viewMainPageButton || "View Main Page"}
                 </Link>
                 <Link
                   href="/api/auth/signout"
                   className="px-4 py-2 bg-black/40 text-pink-300 rounded-lg hover:bg-black/60 transition-all"
                 >
-                  Logout
+                  {dashboardText.logoutButton || "Logout"}
                 </Link>
               </div>
             </div>
 
             <p className="text-pink-200 mt-2">
-              Manage your messages for Anna here
+              {dashboardText.subtitle || "Manage your messages for Anna here"}
             </p>
           </header>
 
@@ -135,17 +168,25 @@ export default function Dashboard() {
           {/* Message list for quick reference */}
           <div className="bg-black/60 backdrop-blur-lg rounded-xl p-6 border border-pink-500/30 shadow-xl mt-8">
             <h2 className="text-xl font-semibold text-pink-300 mb-4">
-              Message List
+              {dashboardText.messageListTitle || "Message List"}
             </h2>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-pink-500/20">
-                    <th className="py-3 px-4 text-pink-300">Date</th>
-                    <th className="py-3 px-4 text-pink-300">Title</th>
-                    <th className="py-3 px-4 text-pink-300">Status</th>
-                    <th className="py-3 px-4 text-pink-300">Actions</th>
+                    <th className="py-3 px-4 text-pink-300">
+                      {dashboardText.dateColumn || "Date"}
+                    </th>
+                    <th className="py-3 px-4 text-pink-300">
+                      {dashboardText.titleColumn || "Title"}
+                    </th>
+                    <th className="py-3 px-4 text-pink-300">
+                      {dashboardText.statusColumn || "Status"}
+                    </th>
+                    <th className="py-3 px-4 text-pink-300">
+                      {dashboardText.actionsColumn || "Actions"}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -155,7 +196,8 @@ export default function Dashboard() {
                         colSpan={4}
                         className="py-8 text-center text-pink-200"
                       >
-                        No messages yet. Create your first one!
+                        {dashboardText.noMessages ||
+                          "No messages yet. Create your first one!"}
                       </td>
                     </tr>
                   ) : (
@@ -169,11 +211,11 @@ export default function Dashboard() {
                         <td className="py-3 px-4">
                           {day.published ? (
                             <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">
-                              Published
+                              {dashboardText.publishedStatus || "Published"}
                             </span>
                           ) : (
                             <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-xs">
-                              Draft
+                              {dashboardText.draftStatus || "Draft"}
                             </span>
                           )}
                         </td>
@@ -183,7 +225,7 @@ export default function Dashboard() {
                               href={`/author/edit/${day.slug}`}
                               className="px-3 py-1 bg-blue-600/30 text-blue-300 rounded-md text-sm hover:bg-blue-600/50 transition-colors"
                             >
-                              Edit
+                              {dashboardText.editButton || "Edit"}
                             </Link>
                             <button
                               onClick={async () => {
@@ -221,7 +263,9 @@ export default function Dashboard() {
                               }}
                               className="px-3 py-1 bg-purple-600/30 text-purple-300 rounded-md text-sm hover:bg-purple-600/50 transition-colors"
                             >
-                              {day.published ? "Unpublish" : "Publish"}
+                              {day.published
+                                ? dashboardText.unpublishButton
+                                : dashboardText.publishButton}
                             </button>
                           </div>
                         </td>

@@ -6,9 +6,11 @@ import { TripCounter } from "@/components/TripCounter";
 import { FloatingHearts } from "@/components/FloatingHearts";
 import Link from "next/link";
 import { FaSignOutAlt, FaTachometerAlt } from "react-icons/fa";
+import { getSiteTextSettings } from "@/lib/settings";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
+  const siteText = await getSiteTextSettings();
 
   // Redirect to login if not authenticated
   if (!session) {
@@ -22,13 +24,11 @@ export default async function Home() {
       <div className="container mx-auto px-4 py-8 relative z-10">
         <header className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold text-pink-300 mb-4 drop-shadow-lg">
-            For My Beautiful Anna 💕
+            {siteText.siteTitle}
           </h1>
-          <p className="text-lg text-pink-200 mb-4">
-            Daniel&apos;s Journey in Japan • July 24 - October 24, 2025
-          </p>
+          <p className="text-lg text-pink-200 mb-4">{siteText.siteSubtitle}</p>
           <p className="text-sm text-pink-300 mb-8 italic">
-            Every moment here, I&apos;m thinking of you ✨
+            {siteText.siteThought}
           </p>
           <TripCounter />
 

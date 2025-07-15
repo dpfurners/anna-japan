@@ -2,6 +2,19 @@
 
 import { useEffect, useState } from "react";
 
+interface SiteTextSettings {
+  counterTitle: {
+    before: string;
+    during: string;
+    after: string;
+  };
+  counterMessage: {
+    before: string;
+    during: string;
+    after: string;
+  };
+}
+
 export function TripCounter() {
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
@@ -17,24 +30,50 @@ export function TripCounter() {
     endDateTime: "",
   });
   const [tripStarted, setTripStarted] = useState<boolean>(false);
+  const [tripEnded, setTripEnded] = useState<boolean>(false);
+  const [siteText, setSiteText] = useState<SiteTextSettings>({
+    counterTitle: {
+      before: "Daniel's Trip to Japan 🇯🇵",
+      during: "Until Daniel Returns Home ✈️",
+      after: "Daniel is Home! 🎉",
+    },
+    counterMessage: {
+      before: "The journey hasn't begun yet! Stay tuned...",
+      during: "Daniel misses you every single moment 💕",
+      after: "🎉 Daniel is finally home with you! 🎉",
+    },
+  });
 
   useEffect(() => {
-    const fetchTripSettings = async () => {
+    const fetchSettings = async () => {
       try {
-        const response = await fetch("/api/trip-settings");
-        if (response.ok) {
-          const settings = await response.json();
+        // Fetch trip settings
+        const tripResponse = await fetch("/api/trip-settings");
+        if (tripResponse.ok) {
+          const settings = await tripResponse.json();
           setTripSettings({
             startDateTime: settings.startDateTime,
             endDateTime: settings.endDateTime,
           });
         }
+
+        // Fetch site text settings
+        const textResponse = await fetch("/api/site-text-settings");
+        if (textResponse.ok) {
+          const textSettings = await textResponse.json();
+          if (textSettings.counterTitle && textSettings.counterMessage) {
+            setSiteText({
+              counterTitle: textSettings.counterTitle,
+              counterMessage: textSettings.counterMessage,
+            });
+          }
+        }
       } catch (error) {
-        console.error("Failed to load trip settings");
+        console.error("Failed to load settings");
       }
     };
 
-    fetchTripSettings();
+    fetchSettings();
   }, []);
 
   useEffect(() => {
@@ -58,7 +97,11 @@ export function TripCounter() {
       const hasStarted = now >= startDate;
       setTripStarted(hasStarted);
 
-      // Only calculate countdown if trip has started
+      // Check if trip has ended
+      const hasEnded = now >= endDate;
+      setTripEnded(hasEnded);
+
+      // Only calculate countdown if trip has started but not ended
       if (hasStarted) {
         const difference = endDate.getTime() - now.getTime();
 
@@ -87,10 +130,10 @@ export function TripCounter() {
       <div className="bg-black/50 backdrop-blur-lg rounded-2xl p-4 md:p-6 shadow-xl border border-pink-500/20">
         <div className="text-center">
           <h2 className="text-lg md:text-xl font-semibold text-pink-300 mb-3 md:mb-4 romantic-glow">
-            Daniel's Trip to Japan 🇯🇵
+            {siteText.counterTitle.before}
           </h2>
           <p className="text-pink-300 text-sm md:text-base romantic-glow">
-            The journey hasn't begun yet! Stay tuned...
+            {siteText.counterMessage.before}
           </p>
         </div>
       </div>
@@ -102,9 +145,25 @@ export function TripCounter() {
       <div className="bg-black/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-pink-500/20">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-pink-300 mb-4">
-            Until Daniel Returns Home ✈️
+            {siteText.counterTitle.during}
           </h2>
           <div className="text-pink-400">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // If trip has ended completely
+  if (tripEnded) {
+    return (
+      <div className="bg-black/50 backdrop-blur-lg rounded-2xl p-4 md:p-6 shadow-xl border border-pink-500/20">
+        <div className="text-center">
+          <h2 className="text-lg md:text-xl font-semibold text-pink-300 mb-3 md:mb-4 romantic-glow">
+            {siteText.counterTitle.after}
+          </h2>
+          <p className="text-pink-300 text-sm md:text-base romantic-glow">
+            {siteText.counterMessage.after}
+          </p>
         </div>
       </div>
     );
@@ -114,7 +173,7 @@ export function TripCounter() {
     <div className="bg-black/50 backdrop-blur-lg rounded-2xl p-4 md:p-6 shadow-xl border border-pink-500/20">
       <div className="text-center">
         <h2 className="text-lg md:text-xl font-semibold text-pink-300 mb-3 md:mb-4 romantic-glow">
-          Until Daniel Returns Home ✈️
+          {siteText.counterTitle.during}
         </h2>
         <div className="grid grid-cols-4 gap-2 md:gap-4">
           <div className="bg-gradient-to-br from-pink-900/80 to-purple-900/80 rounded-lg md:rounded-xl p-2 md:p-4 border border-pink-400/30">
@@ -142,18 +201,9 @@ export function TripCounter() {
             <div className="text-xs md:text-sm text-teal-400">Secs</div>
           </div>
         </div>
-        {timeLeft.days === 0 &&
-        timeLeft.hours === 0 &&
-        timeLeft.minutes === 0 &&
-        timeLeft.seconds === 0 ? (
-          <p className="text-pink-300 mt-3 md:mt-4 text-sm md:text-base font-medium romantic-glow">
-            🎉 Daniel is finally coming home to you! 🎉
-          </p>
-        ) : (
-          <p className="text-pink-300 mt-3 md:mt-4 text-sm md:text-base romantic-glow">
-            Daniel misses you every single moment 💕
-          </p>
-        )}
+        <p className="text-pink-300 mt-3 md:mt-4 text-sm md:text-base romantic-glow">
+          {siteText.counterMessage.during}
+        </p>
       </div>
     </div>
   );

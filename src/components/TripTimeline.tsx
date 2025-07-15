@@ -16,11 +16,24 @@ interface TripDay {
   spotifyUrl: string | null;
 }
 
+interface TimelineText {
+  empty: string;
+  emptySubtext: string;
+  upcoming: string;
+  upcomingSubtext: string;
+}
+
 export function TripTimeline() {
   const [tripDays, setTripDays] = useState<TripDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [timelineFooter, setTimelineFooter] = useState<string | null>(null);
+  const [timelineText, setTimelineText] = useState<TimelineText>({
+    empty: "No messages from Daniel yet...",
+    emptySubtext: "Check back soon for updates! 💕",
+    upcoming: "More adventures and messages coming soon... 🌸",
+    upcomingSubtext: "Anna, you're always in my heart ✨",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,12 +52,21 @@ export function TripTimeline() {
 
         setTripDays(data);
 
-        // Fetch settings for footer
+        // Fetch trip settings for footer
         const settingsResponse = await fetch("/api/trip-settings");
         if (settingsResponse.ok) {
           const settings = await settingsResponse.json();
           if (settings.timelineFooter) {
             setTimelineFooter(settings.timelineFooter);
+          }
+        }
+
+        // Fetch site text settings
+        const textResponse = await fetch("/api/site-text-settings");
+        if (textResponse.ok) {
+          const textSettings = await textResponse.json();
+          if (textSettings.timeline) {
+            setTimelineText(textSettings.timeline);
           }
         }
       } catch (err) {
@@ -91,9 +113,9 @@ export function TripTimeline() {
     return (
       <div className="flex justify-center items-center py-12">
         <div className="text-pink-300 text-lg text-center">
-          <p>No messages from Daniel yet...</p>
+          <p>{timelineText.empty}</p>
           <p className="text-sm text-pink-400 mt-2">
-            Check back soon for updates! 💕
+            {timelineText.emptySubtext}
           </p>
         </div>
       </div>
@@ -135,10 +157,10 @@ export function TripTimeline() {
       <div className="text-center mt-8 md:mt-12 py-6 md:py-8">
         <div className="inline-block bg-black/60 backdrop-blur-lg rounded-xl p-4 md:p-6 border border-pink-500/30">
           <p className="text-pink-300 text-base md:text-lg romantic-glow">
-            More adventures and messages coming soon... 🌸
+            {timelineText.upcoming}
           </p>
           <p className="text-pink-400 text-xs md:text-sm mt-2">
-            Anna, you&apos;re always in my heart ✨
+            {timelineText.upcomingSubtext}
           </p>
         </div>
       </div>
