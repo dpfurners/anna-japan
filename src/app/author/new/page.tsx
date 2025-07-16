@@ -176,7 +176,9 @@ export default function NewMessage() {
                   </label>
                   <MarkdownEditor
                     value={formData.content}
-                    onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+                    onChange={(value) =>
+                      setFormData((prev) => ({ ...prev, content: value }))
+                    }
                     placeholder="Your message to Anna..."
                     rows={8}
                   />
@@ -237,7 +239,9 @@ export default function NewMessage() {
                   </label>
                   <MarkdownEditor
                     value={formData.songLyrics}
-                    onChange={(value) => setFormData(prev => ({ ...prev, songLyrics: value }))}
+                    onChange={(value) =>
+                      setFormData((prev) => ({ ...prev, songLyrics: value }))
+                    }
                     placeholder="Add a few lines of lyrics here..."
                     rows={4}
                   />

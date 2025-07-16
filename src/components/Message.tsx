@@ -144,10 +144,10 @@ export function Message({
           />
         ) : content ? (
           <div className="text-pink-200 text-sm md:text-base leading-relaxed mb-6">
-            {content.split('\n').map((line, index) => (
+            {content.split("\n").map((line, index) => (
               <span key={index}>
                 {line}
-                {index < content.split('\n').length - 1 && <br />}
+                {index < content.split("\n").length - 1 && <br />}
               </span>
             ))}
           </div>
