@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { markdownToHtml } from "@/lib/markdown";
 
 interface MessageProps {
   title: string;
@@ -27,6 +28,35 @@ export function Message({
   spotifyTrackId,
   isPreview = false,
 }: MessageProps) {
+  const [songLyricsHtml, setSongLyricsHtml] = useState<string>("");
+  const [liveContentHtml, setLiveContentHtml] = useState<string>("");
+
+  // Convert song lyrics to HTML
+  useEffect(() => {
+    const convertLyrics = async () => {
+      if (songLyrics && songLyrics.trim()) {
+        const html = await markdownToHtml(songLyrics);
+        setSongLyricsHtml(html);
+      } else {
+        setSongLyricsHtml("");
+      }
+    };
+    convertLyrics();
+  }, [songLyrics]);
+
+  // Convert content to HTML for live preview (when contentHtml is not provided)
+  useEffect(() => {
+    const convertContent = async () => {
+      if (isPreview && content && content.trim() && !contentHtml) {
+        const html = await markdownToHtml(content);
+        setLiveContentHtml(html);
+      } else {
+        setLiveContentHtml("");
+      }
+    };
+    convertContent();
+  }, [content, contentHtml, isPreview]);
+
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -44,6 +74,12 @@ export function Message({
       return spotifyUrl;
     } else if (spotifyTrackId) {
       return `https://open.spotify.com/embed/track/${spotifyTrackId}?utm_source=generator&theme=0`;
+    } else if (spotifyUrl && spotifyUrl.includes("open.spotify.com/track/")) {
+      // Extract track ID from regular Spotify URL
+      const trackIdMatch = spotifyUrl.match(/track\/([a-zA-Z0-9]+)/);
+      if (trackIdMatch) {
+        return `https://open.spotify.com/embed/track/${trackIdMatch[1]}?utm_source=generator&theme=0`;
+      }
     }
     return null;
   };
@@ -99,9 +135,25 @@ export function Message({
               __html: contentHtml,
             }}
           />
+        ) : liveContentHtml ? (
+          <div
+            className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 prose prose-invert prose-pink max-w-none"
+            dangerouslySetInnerHTML={{
+              __html: liveContentHtml,
+            }}
+          />
+        ) : content ? (
+          <div className="text-pink-200 text-sm md:text-base leading-relaxed mb-6">
+            {content.split('\n').map((line, index) => (
+              <span key={index}>
+                {line}
+                {index < content.split('\n').length - 1 && <br />}
+              </span>
+            ))}
+          </div>
         ) : (
           <p className="text-pink-200 italic mb-6">
-            {isPreview ? "Message content will appear here..." : content}
+            {isPreview ? "Message content will appear here..." : "No content"}
           </p>
         )}
 
@@ -133,20 +185,33 @@ export function Message({
 
           {/* Song lyrics */}
           {songLyrics && (
-            <blockquote
-              className={`${
-                isPreview
-                  ? "text-purple-200 italic text-xs leading-relaxed mb-4 pl-4 border-l-2 border-purple-400/50"
-                  : "text-purple-200 italic text-xs md:text-sm leading-relaxed mb-4 pl-2 md:pl-4 border-l-2 border-purple-400/50"
-              }`}
-            >
-              {songLyrics.split("\n").map((line, lineIndex) => (
-                <span key={lineIndex}>
-                  {line}
-                  {lineIndex < songLyrics.split("\n").length - 1 && <br />}
-                </span>
-              ))}
-            </blockquote>
+            <>
+              {songLyricsHtml ? (
+                <div
+                  className={`${
+                    isPreview
+                      ? "text-purple-200 text-xs leading-relaxed mb-4 pl-4 border-l-2 border-purple-400/50 prose prose-invert prose-purple max-w-none"
+                      : "text-purple-200 text-xs md:text-sm leading-relaxed mb-4 pl-2 md:pl-4 border-l-2 border-purple-400/50 prose prose-invert prose-purple max-w-none"
+                  }`}
+                  dangerouslySetInnerHTML={{ __html: songLyricsHtml }}
+                />
+              ) : (
+                <blockquote
+                  className={`${
+                    isPreview
+                      ? "text-purple-200 italic text-xs leading-relaxed mb-4 pl-4 border-l-2 border-purple-400/50"
+                      : "text-purple-200 italic text-xs md:text-sm leading-relaxed mb-4 pl-2 md:pl-4 border-l-2 border-purple-400/50"
+                  }`}
+                >
+                  {songLyrics.split("\n").map((line, lineIndex) => (
+                    <span key={lineIndex}>
+                      {line}
+                      {lineIndex < songLyrics.split("\n").length - 1 && <br />}
+                    </span>
+                  ))}
+                </blockquote>
+              )}
+            </>
           )}
 
           {/* Spotify embed */}

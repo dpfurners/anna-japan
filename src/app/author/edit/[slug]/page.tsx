@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { FloatingHearts } from "@/components/FloatingHearts";
 import Link from "next/link";
 import { Message } from "@/components/Message";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 
 export default function EditMessage() {
   const { data: session, status } = useSession();
@@ -204,18 +205,12 @@ export default function EditMessage() {
                   <label className="block text-pink-300 mb-2">
                     Message Content
                   </label>
-                  <textarea
-                    name="content"
+                  <MarkdownEditor
                     value={formData.content}
-                    onChange={handleChange}
+                    onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
                     placeholder="Your message to Anna..."
-                    required
                     rows={8}
-                    className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100 font-mono"
                   />
-                  <p className="text-pink-400 text-xs mt-1">
-                    Supports markdown formatting
-                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -271,13 +266,11 @@ export default function EditMessage() {
                   <label className="block text-pink-300 mb-2">
                     Song Lyrics
                   </label>
-                  <textarea
-                    name="songLyrics"
+                  <MarkdownEditor
                     value={formData.songLyrics}
-                    onChange={handleChange}
+                    onChange={(value) => setFormData(prev => ({ ...prev, songLyrics: value }))}
                     placeholder="Add a few lines of lyrics here..."
                     rows={4}
-                    className="w-full px-4 py-2 bg-slate-900/70 border border-pink-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400/50 text-pink-100 font-mono"
                   />
                 </div>
 
@@ -311,7 +304,7 @@ export default function EditMessage() {
 
             {/* Preview */}
             <div>
-              <h2 className="text-xl text-pink-300 mb-4">Message Preview</h2>
+              <h2 className="text-xl text-pink-300 mb-4">Live Preview</h2>
               <Message
                 content={formData.content}
                 title={formData.title}
@@ -320,6 +313,7 @@ export default function EditMessage() {
                 songArtist={formData.songArtist}
                 spotifyTrackId={formData.spotifyTrackId}
                 songLyrics={formData.songLyrics}
+                isPreview={true}
               />
             </div>
           </div>
