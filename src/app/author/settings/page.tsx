@@ -57,14 +57,24 @@ export default function TripSettings() {
           const startDateTime = new Date(data.startDateTime);
           const endDateTime = new Date(data.endDateTime);
 
+          const formatDateLocal = (date: Date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+          };
+
+          const formatTimeLocal = (date: Date) => {
+            const hours = String(date.getHours()).padStart(2, "0");
+            const minutes = String(date.getMinutes()).padStart(2, "0");
+            return `${hours}:${minutes}`;
+          };
+
           setFormData({
-            startDate: startDateTime.toISOString().split("T")[0],
-            startTime: startDateTime
-              .toISOString()
-              .split("T")[1]
-              .substring(0, 5),
-            endDate: endDateTime.toISOString().split("T")[0],
-            endTime: endDateTime.toISOString().split("T")[1].substring(0, 5),
+            startDate: formatDateLocal(startDateTime),
+            startTime: formatTimeLocal(startDateTime),
+            endDate: formatDateLocal(endDateTime),
+            endTime: formatTimeLocal(endDateTime),
             timelineFooter: data.timelineFooter || "",
             extraDaysBefore: data.extraDaysBefore || 14,
             extraDaysAfter: data.extraDaysAfter || 7,
