@@ -27,6 +27,7 @@ export default function EditMessage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   useEffect(() => {
     // Redirect if not logged in as author
@@ -71,6 +72,75 @@ export default function EditMessage() {
     }
   }, [session, slug]);
 
+  // Auto-save form data to localStorage
+  useEffect(() => {
+    if (!slug || loading) return;
+
+    const storageKey = `edit-form-data-${slug}`;
+    
+    // Load saved data from localStorage on mount
+    const savedData = localStorage.getItem(storageKey);
+    if (savedData && !hasUnsavedChanges) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        // Only restore if we have unsaved changes indicator
+        if (parsedData.hasUnsavedChanges) {
+          setFormData(prev => ({ ...prev, ...parsedData.formData }));
+          setHasUnsavedChanges(true);
+        }
+      } catch (err) {
+        console.error("Failed to parse saved form data:", err);
+      }
+    }
+  }, [slug, loading, hasUnsavedChanges]);
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    if (!slug || loading) return;
+
+    const storageKey = `edit-form-data-${slug}`;
+    const dataToSave = {
+      formData,
+      hasUnsavedChanges: true,
+      timestamp: Date.now()
+    };
+    
+    localStorage.setItem(storageKey, JSON.stringify(dataToSave));
+  }, [formData, slug, loading]);
+
+  // Clear localStorage on successful save
+  const clearSavedData = () => {
+    if (slug) {
+      localStorage.removeItem(`edit-form-data-${slug}`);
+      setHasUnsavedChanges(false);
+    }
+  };
+
+  // Clean up old localStorage entries (older than 7 days)
+  const cleanupOldStorageEntries = () => {
+    const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith('edit-form-data-')) {
+        try {
+          const data = JSON.parse(localStorage.getItem(key) || '{}');
+          if (data.timestamp && data.timestamp < sevenDaysAgo) {
+            localStorage.removeItem(key);
+          }
+        } catch (err) {
+          // Remove invalid entries
+          localStorage.removeItem(key);
+        }
+      }
+    }
+  };
+
+  // Clean up on mount
+  useEffect(() => {
+    cleanupOldStorageEntries();
+  }, []);
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -96,11 +166,13 @@ export default function EditMessage() {
       // Normal handling for other fields
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
+    setHasUnsavedChanges(true);
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setFormData((prev) => ({ ...prev, [name]: checked }));
+    setHasUnsavedChanges(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -121,6 +193,9 @@ export default function EditMessage() {
         const data = await response.json();
         throw new Error(data.error || "Failed to update message");
       }
+
+      // Clear saved data on successful save
+      clearSavedData();
 
       // Redirect to the dashboard on success
       router.push("/author");
@@ -147,9 +222,16 @@ export default function EditMessage() {
         <div className="container mx-auto px-4 py-8 relative z-10">
           <header className="mb-8">
             <div className="flex justify-between items-center">
-              <h1 className="text-2xl md:text-4xl font-bold text-pink-300 drop-shadow-lg">
-                Edit Message
-              </h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl md:text-4xl font-bold text-pink-300 drop-shadow-lg">
+                  Edit Message
+                </h1>
+                {hasUnsavedChanges && (
+                  <span className="px-2 py-1 bg-yellow-500/20 border border-yellow-400 text-yellow-200 rounded text-sm">
+                    Unsaved changes
+                  </span>
+                )}
+              </div>
 
               <Link
                 href="/author"
@@ -207,9 +289,10 @@ export default function EditMessage() {
                   </label>
                   <MarkdownEditor
                     value={formData.content}
-                    onChange={(value) =>
-                      setFormData((prev) => ({ ...prev, content: value }))
-                    }
+                    onChange={(value) => {
+                      setFormData((prev) => ({ ...prev, content: value }));
+                      setHasUnsavedChanges(true);
+                    }}
                     placeholder="Your message to Anna..."
                     rows={8}
                   />
@@ -270,9 +353,10 @@ export default function EditMessage() {
                   </label>
                   <MarkdownEditor
                     value={formData.songLyrics}
-                    onChange={(value) =>
-                      setFormData((prev) => ({ ...prev, songLyrics: value }))
-                    }
+                    onChange={(value) => {
+                      setFormData((prev) => ({ ...prev, songLyrics: value }));
+                      setHasUnsavedChanges(true);
+                    }}
                     placeholder="Add a few lines of lyrics here..."
                     rows={4}
                   />
